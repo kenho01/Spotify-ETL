@@ -75,14 +75,17 @@ def recentlyplayed():
 
 @app.route('/refresh-token')
 def refresh_token():
+    configure()
+    client_id = os.getenv('CLIENT_ID')
+    client_secret = os.getenv('CLIENT_SECRET')
     if 'refresh_token' not in session:
         return redirect('/login')
     if datetime.now().timestamp() > session['expires_at']:
         req_body = {
             'grant_type' : 'refresh_token',
             'refresh_token' : session['refresh_token'],
-            'client_id' : CLIENT_ID,
-            'client_secret' : CLIENT_SECRET
+            'client_id' : client_id,
+            'client_secret' : client_secret
         }
     response = requests.post(TOKEN_URL, data=req_body)
     new_token_info = response.json()
